@@ -30,8 +30,9 @@ const Html = struct {
 fn callback(chunk: [*c]const u8, size: mdp.MD_SIZE, context: ?*anyopaque) callconv(.C) void {
     std.debug.assert(context != null);
 
-    const output: *Html = @ptrCast(@alignCast(context));
-    const html = chunk[0..size];
+    const output: *Html = @ptrCast(@alignCast(context)); // cast context
+    const html = chunk[0..size]; // copy output string
+    // TODO: maybe make some processing over the string
 
     output._content.appendSlice(html) catch |err| {
         std.debug.print("Failed to append: {}\n", .{err});
