@@ -160,10 +160,11 @@ pub const CSS =
     \\
     \\/* Imágenes */
     \\img {
-    \\    max-width: 100%;
+    \\    max-width: 50%;
     \\    height: auto;
+    \\    display: block;     /* Make the image a block-level element */
     \\    border-radius: 8px;
-    \\    margin: 1.5em 0;
+    \\    margin: 1.5em auto;     /* Centra la imagen horizontalmente con margen superior e inferior */
     \\}
     \\
     \\/* Botones (opcional) */
