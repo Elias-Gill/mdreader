@@ -44,13 +44,11 @@ pub const CSS =
     \\
     \\h1 {
     \\    font-size: 2.5rem;
-    \\    border-bottom: 2px solid #6c6874; /* subtext4 */
     \\    padding-bottom: 0.3em;
     \\}
     \\
     \\h2 {
     \\    font-size: 2rem;
-    \\    border-bottom: 1px solid #6c6874; /* subtext4 */
     \\    padding-bottom: 0.2em;
     \\}
     \\
