@@ -19,7 +19,7 @@ pub fn main() !void {
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
-    var w = WebView.create(true, null);
+    var w = WebView.create(false, null);
     try w.setTitle("Markdown Viewer");
     try w.navigate("http://localhost:9090/app/home"); // home window, dont touch
 
