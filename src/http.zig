@@ -20,8 +20,7 @@ pub fn startHttpServer() !void {
         std.debug.print("An error occurred while resolving the IP address: {}\n", .{err});
         return;
     };
-
-    var server = try addr.listen(.{ .force_nonblocking = true });
+    var server = try addr.listen(.{ .force_nonblocking = true, .reuse_address = true });
 
     while (flag.load(.seq_cst) == false) {
         var connection = server.accept() catch {
@@ -61,7 +60,7 @@ fn handle_request(request: *http.Server.Request) !void {
         try request.respond(template.homeTemplate, .{});
     } else {
         // TODO: open file
-        const markdown = try parser.parseFileToHtml("README.md", allocator);
+        const markdown = try parser.parseFileToHtml("/home/elias/Documentos/wiki/django.md", allocator);
         const content = try markdown.getContent();
         defer markdown.deinit();
 
