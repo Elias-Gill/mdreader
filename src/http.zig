@@ -22,6 +22,7 @@ pub fn startHttpServer() !void {
     };
     var server = try addr.listen(.{ .force_nonblocking = true, .reuse_address = true });
 
+    std.debug.print("Server is up in port :9090", .{});
     while (flag.load(.seq_cst) == false) {
         var connection = server.accept() catch {
             continue;
@@ -52,6 +53,7 @@ pub fn startHttpServer() !void {
 
 fn handle_request(request: *http.Server.Request) !void {
     std.debug.print("Handling request for {s}\n", .{request.head.target});
+
     if (std.mem.eql(u8, request.head.target, "/assets/styles.css")) {
         try request.respond(template.CSS, .{});
     } else if (std.mem.eql(u8, request.head.target, "/assets/htmx.js")) {
@@ -59,11 +61,35 @@ fn handle_request(request: *http.Server.Request) !void {
     } else if (std.mem.eql(u8, request.head.target, "/app/home")) {
         try request.respond(template.homeTemplate, .{});
     } else {
-        // TODO: open file
-        const markdown = try parser.parseFileToHtml("/home/elias/Documentos/wiki/django.md", allocator);
-        const content = try markdown.getContent();
+        // Handle markdown file requests
+        if (request.head.target.len < 2) {
+            // If the target is just "/", return a 404
+            try request.respond("Invalid path", .{ .status = .not_found });
+            return;
+        }
+
+        // Remove the leading '/' to get the file path
+        const file_path = request.head.target[1..request.head.target.len];
+
+        // Parse the markdown file to HTML
+        const markdown = parser.parseFileToHtml(file_path, allocator) catch |err| {
+            std.debug.print("Failed to parse markdown file: {s}\n", .{@errorName(err)});
+            try request.respond("Failed to process markdown", .{ .status = .internal_server_error });
+            return;
+        };
         defer markdown.deinit();
 
-        try request.respond(content, .{});
+        // Get the HTML content
+        const content = markdown.getContent() catch |err| {
+            std.debug.print("Failed to get markdown content: {s}\n", .{@errorName(err)});
+            try request.respond("Failed to process markdown", .{ .status = .internal_server_error });
+            return;
+        };
+
+        const html = try std.fmt.allocPrint(allocator, template.homeTemplate, .{content});
+        defer allocator.free(html);
+
+        // Serve the HTML content
+        try request.respond(html, .{});
     }
 }

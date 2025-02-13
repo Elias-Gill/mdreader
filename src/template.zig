@@ -10,15 +10,7 @@ pub const homeTemplate =
     \\</head>
     \\<body>
     \\    <h1>Markdown Viewer</h1>
-    \\    <button
-    \\        hx-get="/README.md"
-    \\        hx-target="#markdown-container"
-    \\        hx-swap="innerHTML"
-    \\        hx-trigger="click"
-    \\    >
-    \\        Load README.md
-    \\    </button>
-    \\    <div id="markdown-container"></div>
+    \\    <div id="markdown-container">{s}</div>
     \\</body>
     \\</html>
 ;
