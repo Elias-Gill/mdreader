@@ -56,8 +56,6 @@ fn handle_request(request: *http.Server.Request) !void {
 
     if (std.mem.eql(u8, request.head.target, "/assets/styles.css")) {
         try request.respond(template.CSS, .{});
-    } else if (std.mem.eql(u8, request.head.target, "/assets/htmx.js")) {
-        try request.respond(template.HTMX, .{});
     } else if (std.mem.eql(u8, request.head.target, "/app/home")) {
         try request.respond(template.homeTemplate, .{});
     } else if (std.mem.endsWith(u8, request.head.target, ".md") or std.mem.endsWith(u8, request.head.target, ".markdown")) {
